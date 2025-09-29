@@ -4,7 +4,6 @@ from markdown_inline import text_to_textnodes
 from textnode import text_node_to_html_node, TextNode, TextType
 
 
-
 class BlockType(Enum):
     PARAGRAPH = "paragraph"
     HEADING = "heading"
