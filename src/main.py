@@ -1,14 +1,15 @@
 import os
 import shutil
-from textnode import TextNode, TextType
 from copy_static import copy_static
-from generate_page import extract_title, generate_page
-from config import TARGET_DIR, WORKING_DIR
+from generate_page import generate_pages
+from config import STATIC_DIR, CONTENT_DIR, TARGET_DIR, TEMPLATE
 
 
 def main():
+    static_dir = os.path.abspath(STATIC_DIR)
+    content_dir = os.path.abspath(CONTENT_DIR)
     target_dir = os.path.abspath(TARGET_DIR)
-    working_dir = os.path.abspath(WORKING_DIR)
+    template = os.path.abspath(TEMPLATE)
 
     if os.path.exists(target_dir): # check if path exist and delete anything in it
         for filename in os.listdir(target_dir):
@@ -27,7 +28,7 @@ def main():
         except Exception as e:
             return f'Error: {e}'
 
-    copy_static(target_dir, working_dir)
-    generate_page("content/index.md", "template.html", "public/index.html")
+    copy_static(static_dir, target_dir)
+    generate_pages(content_dir, template, target_dir)
 
 main()
