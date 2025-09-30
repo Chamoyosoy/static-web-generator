@@ -14,29 +14,31 @@ def extract_title(markdown):
 
 def generate_page(from_path,template_path,dest_path):
     print(f'Generating page from {from_path} to {dest_path} using {template_path}')
-    
-    from_path = os.path.abspath(from_path)
-    template_path = os.path.abspath(template_path)
-    dest_path = os.path.abspath(dest_path)
-
-    if not os.path.exists(dest_path):
-        try: #if not exist try to create the path 
-            os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-            
-        except Exception as e:
-            return f'Error: creating directory {e}'
-
+        
     with open(from_path) as f:
         markdown = f.read()
     with open(template_path) as f:
         template = f.read()
     content = markdown_to_html_node(markdown).to_html()
     title = extract_title(from_path)
-    # final = template.replace("{{ Title }}", title).replace("{{ Content }}", content)
-    final = template.replace("{{ Content }}", content).replace("{{ Title }}", title)
+    final = template.replace("{{ Title }}", title).replace("{{ Content }}", content)
     try:
         with open(dest_path, "w") as f:
             f.write(final)
         return f'succesfully wrote to {dest_path}'
     except Exception as e:
         return f'Error: writing to file {e}'
+
+def generate_pages(dir_path_content, template_path, dest_dir_path):
+    for filename in os.listdir(dir_path_content):
+        src_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename).replace(".md", ".html")
+  
+        try:
+            if os.path.isfile(src_path):
+                generate_page(src_path, template_path, dest_path)
+            elif os.path.isdir(src_path):
+                os.mkdir(dest_path)
+                generate_pages(src_path, template_path, dest_path)
+        except Exception as e:
+            return f'Error: {e}'
